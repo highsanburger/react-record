@@ -2,47 +2,42 @@ import React, { useState, useEffect } from 'react';
 
 function App() {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch user data from the API
+    // Fetch data from the API
     fetch('https://dummyjson.com/users')
       .then((response) => response.json())
-      .then((data) => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      });
+      .then((data) => setUsers(data.users)) // Note the 'data.users' here
+      .catch((error) => console.error('Error fetching data: ', error));
   }, []);
 
   return (
     <div className="App">
       <h1>User Table</h1>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Username</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users && users.length > 0 ? (
+            users.map((user) => (
               <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.name}</td>
+                <td>{user.firstName} {user.lastName}</td>
                 <td>{user.email}</td>
+                <td>{user.username}</td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3">Loading...</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }
